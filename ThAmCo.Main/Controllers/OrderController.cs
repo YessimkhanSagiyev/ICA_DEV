@@ -3,75 +3,65 @@ using Microsoft.AspNetCore.Mvc;
 using ThAmCo.Main.DTOs;
 using ThAmCo.Main.Models;
 using ThAmCo.Main.Services.OrderService;
+using System;
+using System.Threading.Tasks;
 
-namespace ThAmCo.Main.Controllers
+
+[ApiController]
+[Route("api/orders")]
+public class OrderController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    [Authorize]
-    public class OrderController : ControllerBase
+    // Simulated in-memory data storage
+    private static readonly Dictionary<Guid, string> Orders = new();
+    private static readonly Dictionary<Guid, string> Users = new();
+
+    public OrderController()
     {
-        private readonly IOrderService _orderService;
-
-        public OrderController(IOrderService orderService)
+        if (!Orders.Any())
         {
-            _orderService = orderService;
+            Orders[Guid.NewGuid()] = "Pending";
+            Orders[Guid.NewGuid()] = "Shipped";
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllOrders()
+        if (!Users.Any())
         {
-            var orders = await _orderService.GetAllOrders();
-
-            var response = orders.Select(o => new OrderResponseDto
-            {
-                OrderId = o.OrderId,
-                UserId = o.UserId,
-                ProductId = o.ProductId,
-                Quantity = o.Quantity,
-                Status = o.Status,
-                OrderDate = o.OrderDate
-            });
-
-            return Ok(response);
-        }
-
-        [HttpGet("{id}")]
-        [Authorize]
-        public async Task<IActionResult> GetOrderById(int id)
-        {
-            var order = await _orderService.GetOrderById(id);
-            if (order == null)
-                return NotFound();
-
-            var response = new OrderResponseDto
-            {
-                OrderId = order.OrderId,
-                UserId = order.UserId,
-                ProductId = order.ProductId,
-                Quantity = order.Quantity,
-                Status = order.Status,
-                OrderDate = order.OrderDate
-            };
-
-            return Ok(response);
-        }
-
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> AddOrder([FromBody] OrderRequestDto orderDto)
-        {
-            var order = new Order
-            {
-                UserId = orderDto.UserId,
-                ProductId = orderDto.ProductId,
-                Quantity = orderDto.Quantity,
-                Status = "Pending",
-                OrderDate = DateTime.UtcNow
-            };
-
-            await _orderService.AddOrder(order);
-            return CreatedAtAction(nameof(GetOrderById), new { id = order.OrderId }, order);
+            Users[Guid.NewGuid()] = "John Doe";
+            Users[Guid.NewGuid()] = "Jane Smith";
         }
     }
+
+    [HttpPut("change-status")]
+    public async Task<IActionResult> ChangeOrderStatusAsync([FromBody] ChangeStatusRequest request)
+    {
+        if (!Orders.ContainsKey(request.OrderId))
+        {
+            return NotFound("Order not found.");
+        }
+
+        Orders[request.OrderId] = request.NewStatus;
+
+        await Task.CompletedTask;
+        return Ok($"Order status updated to '{request.NewStatus}'.");
+    }
+
+    [HttpDelete("delete-user/{userId}")]
+    public async Task<IActionResult> DeleteUserAccountAsync(Guid userId)
+    {
+        if (!Users.ContainsKey(userId))
+        {
+            return NotFound("User not found.");
+        }
+
+        Users.Remove(userId);
+
+        await Task.CompletedTask;
+        return Ok("User account deleted successfully.");
+    }
+}
+
+// DTOs
+public class ChangeStatusRequest
+{
+    public Guid OrderId { get; set; }
+    public string NewStatus { get; set; }
 }

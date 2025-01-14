@@ -20,9 +20,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddOpenApiDocument(options =>
+{
+    options.Title = "ICA_DEV API";
+    options.Version = "v1";
+});
+
 builder.Services.AddHttpClient("ThirdPartyAPI", client =>
 {
-    client.BaseAddress = new Uri("https://api.example.com/");
+    client.BaseAddress = new Uri("http://undercutters.azurewebsites.net/");
     client.Timeout = TimeSpan.FromSeconds(10);
 })
 .AddPolicyHandler(GetRetryPolicy())
