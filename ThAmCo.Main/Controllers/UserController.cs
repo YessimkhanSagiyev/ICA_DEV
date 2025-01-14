@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ThAmCo.Main.DTOs;
 using ThAmCo.Main.Models;
@@ -7,6 +8,7 @@ namespace ThAmCo.Main.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -17,6 +19,7 @@ namespace ThAmCo.Main.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userService.GetAllUsers();
@@ -24,6 +27,7 @@ namespace ThAmCo.Main.Controllers
         }
 
         [HttpPost("register")]
+        [Authorize]
         public async Task<IActionResult> Register([FromBody] UserRegistrationDto userDto)
         {
             var user = new User
@@ -49,6 +53,7 @@ namespace ThAmCo.Main.Controllers
         }
 
         [HttpPost("login")]
+        [Authorize]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
             var isValid = await _userService.ValidateUserCredentials(loginDto.Email, loginDto.Password);
@@ -70,6 +75,7 @@ namespace ThAmCo.Main.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetUserById(int id)
         {
             var user = await _userService.GetUserById(id);

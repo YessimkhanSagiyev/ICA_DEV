@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ThAmCo.Main.DTOs;
 using ThAmCo.Main.Models;
@@ -7,6 +8,7 @@ namespace ThAmCo.Main.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
@@ -35,6 +37,7 @@ namespace ThAmCo.Main.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetOrderById(int id)
         {
             var order = await _orderService.GetOrderById(id);
@@ -55,6 +58,7 @@ namespace ThAmCo.Main.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddOrder([FromBody] OrderRequestDto orderDto)
         {
             var order = new Order
