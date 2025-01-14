@@ -44,19 +44,6 @@ public class OrderController : ControllerBase
         return Ok($"Order status updated to '{request.NewStatus}'.");
     }
 
-    [HttpDelete("delete-user/{userId}")]
-    public async Task<IActionResult> DeleteUserAccountAsync(Guid userId)
-    {
-        if (!Users.ContainsKey(userId))
-        {
-            return NotFound("User not found.");
-        }
-
-        Users.Remove(userId);
-
-        await Task.CompletedTask;
-        return Ok("User account deleted successfully.");
-    }
 }
 
 // DTOs

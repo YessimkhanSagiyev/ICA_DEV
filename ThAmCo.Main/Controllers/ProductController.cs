@@ -8,7 +8,6 @@ namespace ThAmCo.Main.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -19,7 +18,6 @@ namespace ThAmCo.Main.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetAllProducts()
         {
             var products = await _productService.GetAllProducts();
@@ -37,7 +35,6 @@ namespace ThAmCo.Main.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<IActionResult> GetProductById(int id)
         {
             var product = await _productService.GetProductById(id);
@@ -57,7 +54,6 @@ namespace ThAmCo.Main.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> AddProduct([FromBody] ProductResponseDto productDto)
         {
             var product = new Product
