@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 [ApiController]
 [Route("api/orders")]
+[Authorize]
 public class OrderController : ControllerBase
 {
     // Simulated in-memory data storage
@@ -31,6 +32,7 @@ public class OrderController : ControllerBase
     }
 
     [HttpPut("change-status")]
+    [Authorize]
     public async Task<IActionResult> ChangeOrderStatusAsync([FromBody] ChangeStatusRequest request)
     {
         if (!Orders.ContainsKey(request.OrderId))
