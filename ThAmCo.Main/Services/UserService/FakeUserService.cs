@@ -13,7 +13,7 @@ namespace ThAmCo.Main.Services.UserService
             _users = new List<User>
             {
                 new User { UserId = 1, Name = "John Doe", Email = "john.doe@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password123"), Address = "123 Main St", CreatedAt = DateTime.UtcNow },
-                new User { UserId = 2, Name = "Jane Smiths", Email = "jane.smith@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("mypassword"), Address = "456 Maple Ave", CreatedAt = DateTime.UtcNow }
+                new User { UserId = 2, Name = "Jane Smith", Email = "jane.smith@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("mypassword"), Address = "456 Maple Ave", CreatedAt = DateTime.UtcNow }
             };
         }
 
